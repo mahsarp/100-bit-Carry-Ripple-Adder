@@ -1,0 +1,29 @@
+module full_adder( input a, input b, input cin, output cout,output sum);
+    assign cout=a &b | a & cin | cin & b;
+    assign sum= a^ b ^ cin;
+    
+endmodule
+
+module top_module( 
+    input [99:0] a, b,
+    input cin,
+    output [99:0] cout,
+    output [99:0] sum );
+    
+    genvar i;
+    
+    wire [99:0] c; // internal carries declared as nets.
+    
+    generate for (i = 0; i < 100; i = i + 1) 
+     begin:adder
+    if (i == 0) // specify LSB
+    full_adder fa (a[i], b[i], cin,c[i] ,sum[i]);
+     else // specify other bits
+    full_adder ba (a[i], b[i], c[i-1],c[i],sum[i]);
+        
+    end
+  endgenerate
+    
+    assign cout=c;
+
+endmodule
